@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_jdk8-code-project" default="compile.module.jdk8-code-project">
+  <dirname property="module.jdk8-code-project.basedir" file="${ant.file.module_jdk8-code-project}"/>
+  
+  <property name="module.jdk.home.jdk8-code-project" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.jdk8-code-project" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.jdk8-code-project" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.jdk8-code-project" value="-encoding UTF-8 -source 8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="jdk8-code-project.output.dir" value="/production/jdk8-code-project"/>
+  <property name="jdk8-code-project.testoutput.dir" value="/test/jdk8-code-project"/>
+  
+  <path id="jdk8-code-project.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="jdk8-code-project.module.production.classpath">
+    <path refid="${module.jdk.classpath.jdk8-code-project}"/>
+  </path>
+  
+  <path id="jdk8-code-project.runtime.production.module.classpath">
+    <pathelement location="${jdk8-code-project.output.dir}"/>
+  </path>
+  
+  <path id="jdk8-code-project.module.classpath">
+    <path refid="${module.jdk.classpath.jdk8-code-project}"/>
+    <pathelement location="${jdk8-code-project.output.dir}"/>
+  </path>
+  
+  <path id="jdk8-code-project.runtime.module.classpath">
+    <pathelement location="${jdk8-code-project.testoutput.dir}"/>
+    <pathelement location="${jdk8-code-project.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.jdk8-code-project">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.jdk8-code-project">
+    <patternset refid="excluded.from.module.jdk8-code-project"/>
+  </patternset>
+  
+  <path id="jdk8-code-project.module.sourcepath">
+    <dirset dir="${module.jdk8-code-project.basedir}/../../jdk8-src">
+      <include name="com"/>
+      <include name="java"/>
+      <include name="javax"/>
+      <include name="launcher"/>
+      <include name="org"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.jdk8-code-project" depends="compile.module.jdk8-code-project.production,compile.module.jdk8-code-project.tests" description="Compile module jdk8-code-project"/>
+  
+  <target name="compile.module.jdk8-code-project.production" depends="register.custom.compilers" description="Compile module jdk8-code-project; production classes">
+    <mkdir dir="${jdk8-code-project.output.dir}"/>
+    <javac2 destdir="${jdk8-code-project.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jdk8-code-project}/javac">
+      <compilerarg line="${compiler.args.jdk8-code-project}"/>
+      <bootclasspath refid="jdk8-code-project.module.bootclasspath"/>
+      <classpath refid="jdk8-code-project.module.production.classpath"/>
+      <src refid="jdk8-code-project.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jdk8-code-project"/>
+    </javac2>
+    
+    <copy todir="${jdk8-code-project.output.dir}">
+      <fileset dir="${module.jdk8-code-project.basedir}/../com">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.jdk8-code-project.basedir}/../java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.jdk8-code-project.basedir}/../javax">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.jdk8-code-project.basedir}/../launcher">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.jdk8-code-project.basedir}/../org">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.jdk8-code-project.tests" depends="register.custom.compilers,compile.module.jdk8-code-project.production" description="compile module jdk8-code-project; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.jdk8-code-project" description="cleanup module">
+    <delete dir="${jdk8-code-project.output.dir}"/>
+    <delete dir="${jdk8-code-project.testoutput.dir}"/>
+  </target>
+</project>
